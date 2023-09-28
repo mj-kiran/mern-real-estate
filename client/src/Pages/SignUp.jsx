@@ -1,23 +1,52 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom'
+import { Link ,useNavigate} from 'react-router-dom'
 export default function SignUp() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+const navigate=useNavigate()
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+    
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    try {
+      setLoading(true);
+      const res = await fetch("/api/auth/sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        setError(data.message);
+        setLoading(false);
+        return;
+      }
+      setLoading(false);
+      setError(null)
+      setTimeout(() => {
+        navigate("/sign-in");
+      },3000)
+      
+    
+    } catch (error) {
+      setLoading(false)
+      setError(error.message)
+    }
+    
   };
   return (
     <div className="flex justify-center items-center h-screen">
@@ -78,10 +107,11 @@ export default function SignUp() {
         </div>
         <div className="text-center">
           <button
+            disabled={loading}
             type="submit"
             className="bg-blue-500 text-white font-bold py-2 px-4 rounded uppercase hover:opacity-90"
           >
-            Sign Up
+            {loading ? "Loading..." : "Sign up"}
           </button>
         </div>
         <div className="flex gap-2 mt-4">
@@ -90,6 +120,7 @@ export default function SignUp() {
             <span className="text-blue-500">Sign In</span>
           </Link>
         </div>
+        {error && <p className="text-red-500">{error}</p>}
       </form>
     </div>
   );
