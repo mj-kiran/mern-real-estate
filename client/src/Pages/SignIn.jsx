@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { signInStart,signInFailure,signInSuccess } from "../redux/user/userSlice";
+import Oauth from "../components/Oauth";
 export default function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
@@ -52,7 +53,7 @@ export default function SignIn() {
         onSubmit={handleSubmit}
       >
         <h1 className="text-3xl text-center font-bold mb-4">Sign In</h1>
-        
+
         <div className="mb-4 mt-6">
           <label
             htmlFor="email"
@@ -85,7 +86,7 @@ export default function SignIn() {
             className="w-full p-2 border rounded"
           />
         </div>
-        <div className="text-center">
+        <div className="text-center ">
           <button
             disabled={loading}
             type="submit"
@@ -94,8 +95,14 @@ export default function SignIn() {
             {loading ? "Loading..." : "Sign In"}
           </button>
         </div>
+
+        <div className="text-center mt-2">
+         
+          <Oauth />
+        </div>
+
         <div className="flex gap-2 mt-4">
-          <p className="">Do Not Have an account?</p>
+          <p className="text-sm">Do Not Have an account?</p>
           <Link to={"/sign-up"}>
             <span className="text-blue-500">SignUp</span>
           </Link>
